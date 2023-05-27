@@ -1,8 +1,8 @@
-# React Three Fiber + Vite Starter
+# R3F Portal Postprocessing
 
-_A simple React Three Fiber + Vite starter with an import-ready CodeSandbox config._
+Example of how to apply postprocessing to a portal scene :)
 
-![Preview](/public/preview.gif)
+There is a [codesandbox](https://codesandbox.io/p/github/wuhhh/r3f-portal-preprocessing/main) too.
 
 ### Resources:
 
