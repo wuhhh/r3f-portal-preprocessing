@@ -83,7 +83,7 @@ const Scene = () => {
       <Plane ref={planeRef} args={[2, 2, 2]} position={[-1, 0, 0]}>
         <meshBasicMaterial map={targetSavePass.renderTarget.texture} />
       </Plane>
-      <Box ref={boxRef2} args={[1, 1, 1]} rotation={[0.5, 0, 0]} position={[1.5, 0, -1.5]}>
+      <Box ref={boxRef2} args={[1, 1, 1]} scale={0.5} rotation={[0.5, 0, 0]} position={[1, 0, 0]}>
         <meshNormalMaterial />
       </Box>
     </>
