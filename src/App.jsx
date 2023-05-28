@@ -1,8 +1,16 @@
 import * as THREE from "three";
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useMemo, useRef } from "react";
 import { Canvas, createPortal, useFrame, useThree } from "@react-three/fiber";
 import { Box, OrbitControls, Plane } from "@react-three/drei";
-import { CopyPass, EffectComposer, EffectPass, GlitchEffect, PixelationEffect, RenderPass } from "postprocessing";
+import {
+  ChromaticAberrationEffect,
+  CopyPass,
+  EffectComposer,
+  EffectPass,
+  PixelationEffect,
+  RenderPass,
+  ScanlineEffect,
+} from "postprocessing";
 
 const Scene = () => {
   const { gl, scene, camera } = useThree();
@@ -15,7 +23,7 @@ const Scene = () => {
     const targetScene = new THREE.Scene();
 
     // Set portal clear colour
-    targetScene.background = new THREE.Color("black");
+    targetScene.background = new THREE.Color("pink");
 
     return [new THREE.PerspectiveCamera(), targetScene];
   }, []);
@@ -34,9 +42,10 @@ const Scene = () => {
     const renderPass = new RenderPass(scene, camera);
     const targetRenderPass = new RenderPass(targetScene, targetCamera);
     const targetSavePass = new CopyPass();
-    const glitch = new GlitchEffect();
-    const pixel = new PixelationEffect(50);
-    const targetEffectPass = new EffectPass(targetCamera, glitch, pixel);
+    const scan = new ScanlineEffect({ density: 0.5 });
+    const pixel = new PixelationEffect();
+    const chroma = new ChromaticAberrationEffect({ offset: new THREE.Vector2(0.0125, 0.0125) });
+    const targetEffectPass = new EffectPass(targetCamera, scan, chroma);
 
     composer.addPass(targetRenderPass);
     composer.addPass(targetEffectPass);
@@ -53,10 +62,12 @@ const Scene = () => {
   useFrame((_, delta) => composer.render(delta));
 
   const boxRef = useRef();
+  const boxRef2 = useRef();
   const planeRef = useRef();
 
   useFrame(() => {
     boxRef.current.rotation.y += 0.02;
+    boxRef2.current.rotation.y += 0.02;
   });
 
   return (
@@ -69,16 +80,19 @@ const Scene = () => {
         </>,
         targetScene
       )}
-      <Plane ref={planeRef} args={[2, 2, 2]} position={[0, 0, 0]}>
+      <Plane ref={planeRef} args={[2, 2, 2]} position={[-1, 0, 0]}>
         <meshBasicMaterial map={targetSavePass.renderTarget.texture} />
       </Plane>
+      <Box ref={boxRef2} args={[1, 1, 1]} rotation={[0.5, 0, 0]} position={[1.5, 0, -1.5]}>
+        <meshNormalMaterial />
+      </Box>
     </>
   );
 };
 
 const App = () => {
   return (
-    <Canvas flat linear camera={{ fov: 70, position: [0, 0, 3] }}>
+    <Canvas flat linear camera={{ position: [0, 0, 3] }}>
       <OrbitControls />
       <Scene />
     </Canvas>
