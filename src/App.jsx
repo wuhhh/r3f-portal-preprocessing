@@ -2,15 +2,7 @@ import * as THREE from "three";
 import React, { useMemo, useRef } from "react";
 import { Canvas, createPortal, useFrame, useThree } from "@react-three/fiber";
 import { Box, OrbitControls, Plane } from "@react-three/drei";
-import {
-  ChromaticAberrationEffect,
-  CopyPass,
-  EffectComposer,
-  EffectPass,
-  PixelationEffect,
-  RenderPass,
-  ScanlineEffect,
-} from "postprocessing";
+import { ChromaticAberrationEffect, CopyPass, EffectComposer, EffectPass, RenderPass, ScanlineEffect } from "postprocessing";
 
 const Scene = () => {
   const { gl, scene, camera } = useThree();
