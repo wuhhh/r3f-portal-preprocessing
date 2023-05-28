@@ -7,8 +7,6 @@ import { CopyPass, EffectComposer, EffectPass, GlitchEffect, RenderPass } from "
 const Scene = () => {
   const { gl, scene, size, camera } = useThree();
 
-  // gl.outputColorSpace = "sRGBEncoding";
-
   /**
    * Target camera and scene setup
    */
