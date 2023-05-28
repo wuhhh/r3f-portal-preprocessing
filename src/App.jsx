@@ -43,7 +43,6 @@ const Scene = () => {
     const targetRenderPass = new RenderPass(targetScene, targetCamera);
     const targetSavePass = new CopyPass();
     const scan = new ScanlineEffect({ density: 0.5 });
-    const pixel = new PixelationEffect();
     const chroma = new ChromaticAberrationEffect({ offset: new THREE.Vector2(0.0125, 0.0125) });
     const targetEffectPass = new EffectPass(targetCamera, scan, chroma);
 
