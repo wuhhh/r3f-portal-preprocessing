@@ -13,7 +13,7 @@ const Scene = () => {
 
   const [targetCamera, targetScene] = useMemo(() => {
     const targetScene = new THREE.Scene();
-    // ...maybe set background?
+    // Set portal clear colour
     targetScene.background = new THREE.Color("black");
 
     return [new THREE.PerspectiveCamera(), targetScene];
@@ -43,16 +43,16 @@ const Scene = () => {
   }, [camera, gl, scene, targetCamera, targetScene]);
 
   /**
-   * Auto resize composer scene I think? Maybe?
+   * Auto resize portal
    */
 
   useEffect(() => void composer.setSize(size.width, size.height), [composer, size, targetScene]);
 
   /**
-   * Render composer scene (?)
+   * Render portal scene
    */
 
-  useFrame((_, delta) => void composer.render(delta), 1);
+  useFrame((_, delta) => composer.render(delta));
 
   /**
    * Animate target camera position
