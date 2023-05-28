@@ -2,10 +2,10 @@ import * as THREE from "three";
 import React, { useEffect, useMemo, useRef } from "react";
 import { Canvas, createPortal, useFrame, useThree } from "@react-three/fiber";
 import { Box, OrbitControls, Plane } from "@react-three/drei";
-import { CopyPass, EffectComposer, EffectPass, GlitchEffect, RenderPass } from "postprocessing";
+import { CopyPass, EffectComposer, EffectPass, GlitchEffect, PixelationEffect, RenderPass } from "postprocessing";
 
 const Scene = () => {
-  const { gl, scene, size, camera } = useThree();
+  const { gl, scene, camera } = useThree();
 
   /**
    * Target camera and scene setup
@@ -13,6 +13,7 @@ const Scene = () => {
 
   const [targetCamera, targetScene] = useMemo(() => {
     const targetScene = new THREE.Scene();
+
     // Set portal clear colour
     targetScene.background = new THREE.Color("black");
 
@@ -28,14 +29,17 @@ const Scene = () => {
       frameBufferType: THREE.HalfFloatType,
     });
 
+    targetCamera.position.z = 3;
+
     const renderPass = new RenderPass(scene, camera);
     const targetRenderPass = new RenderPass(targetScene, targetCamera);
     const targetSavePass = new CopyPass();
     const glitch = new GlitchEffect();
-    const targetGlitchPass = new EffectPass(targetCamera, glitch);
+    const pixel = new PixelationEffect(50);
+    const targetEffectPass = new EffectPass(targetCamera, glitch, pixel);
 
     composer.addPass(targetRenderPass);
-    composer.addPass(targetGlitchPass);
+    composer.addPass(targetEffectPass);
     composer.addPass(targetSavePass);
     composer.addPass(renderPass);
 
@@ -43,29 +47,15 @@ const Scene = () => {
   }, [camera, gl, scene, targetCamera, targetScene]);
 
   /**
-   * Auto resize portal
-   */
-
-  useEffect(() => void composer.setSize(size.width, size.height), [composer, size, targetScene]);
-
-  /**
    * Render portal scene
    */
 
   useFrame((_, delta) => composer.render(delta));
 
-  /**
-   * Animate target camera position
-   */
-
-  useFrame(state => {
-    targetCamera.position.z = 15 + Math.sin(state.clock.getElapsedTime()) * 10;
-  });
-
   const boxRef = useRef();
   const planeRef = useRef();
 
-  useFrame((state, delta) => {
+  useFrame(() => {
     boxRef.current.rotation.y += 0.02;
   });
 
@@ -88,7 +78,7 @@ const Scene = () => {
 
 const App = () => {
   return (
-    <Canvas camera={{ fov: 70, position: [0, 0, 3] }}>
+    <Canvas flat linear camera={{ fov: 70, position: [0, 0, 3] }}>
       <OrbitControls />
       <Scene />
     </Canvas>
